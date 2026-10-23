@@ -55,7 +55,8 @@ The server only serves the page. It holds no key and never sees yours. Every set
 
 ## Deploy
 
-Fly.io, one app: `fly deploy`. No secrets to set.
+Fly.io, one app, `dg-devrel-juniper-front-desk`: `fly deploy`. No secrets to set. Live at
+<https://dg-devrel-juniper-front-desk.fly.dev>.
 
 ## License
 

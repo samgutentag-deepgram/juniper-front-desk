@@ -1,4 +1,4 @@
-app = "juniper-front-desk"
+app = "dg-devrel-juniper-front-desk"
 primary_region = "iad"
 
 [build]

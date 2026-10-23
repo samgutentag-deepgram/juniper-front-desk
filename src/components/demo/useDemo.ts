@@ -31,7 +31,6 @@ export function useDemo(toggles: Toggles, voice: VoiceId, tone: number, onSaid: 
   onSaidRef.current = onSaid
   const lastDivider = useRef('')
   const [entries, setEntries] = useState<DemoEntry[]>([])
-  const [done, setDone] = useState<Set<string>>(new Set())
   const [callerTalking, setCallerTalking] = useState(false)
   const [agentTalking, setAgentTalking] = useState(false)
   const agentAudio = useRef<{ el: HTMLAudioElement; entryKey: number; stop: () => void } | null>(null)
@@ -106,7 +105,6 @@ export function useDemo(toggles: Toggles, voice: VoiceId, tone: number, onSaid: 
     if (splitTurn) chips.push({ kind: 'warn', text: 'Your turn ended at the pause' })
     if (step.toggle === 'smartEot' && on) chips.push({ kind: 'ok', text: 'Flux waited through the pause' })
     push({ role: 'user', text: splitTurn ? take.heard[0]! : take.heard.join(' '), chips })
-    setDone((d) => new Set(d).add(id))
     onSaidRef.current(id)
 
     // The reply. The voice beat swaps in the take for the chosen voice and tone.
@@ -147,10 +145,8 @@ export function useDemo(toggles: Toggles, voice: VoiceId, tone: number, onSaid: 
     setAgentTalking(false)
     setCallerTalking(false)
     setEntries([])
-    setDone(new Set())
     lastDivider.current = ''
   }, [])
 
-  const next = SCRIPT.find((s) => !done.has(s.id))?.id ?? null
-  return { entries, done, next, say, stop, reset, callerTalking, agentTalking }
+  return { entries, say, stop, reset, callerTalking, agentTalking }
 }
