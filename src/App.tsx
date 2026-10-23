@@ -7,7 +7,7 @@ import { ALL_OFF, TOGGLE_ORDER, type ToggleName, type Toggles } from './lib/togg
 import { ToggleCard } from './components/ToggleCard'
 import { SwitchBar } from './components/SwitchBar'
 import { Guide } from './components/guide/Guide'
-import { CHAPTERS, currentLine, guide, phaseFor, runLabel, START, type GuideEvent, type GuideState } from './lib/guide'
+import { CHAPTERS, currentLine, guide, historyBefore, phaseFor, runLabel, START, type GuideEvent, type GuideState } from './lib/guide'
 import { VoiceCard } from './components/VoiceCard'
 import { KeyEntry } from './components/KeyEntry'
 import { CreditCta } from './components/CreditCta'
@@ -28,6 +28,10 @@ export function App() {
   const [callId, setCallId] = useState(0)
   const [error, setError] = useState<string | null>(null)
   const [walk, setWalk] = useState<GuideState>(START)
+  // The chapter a live call was started from. Its earlier lines go to the agent as context.
+  const [liveSeed, setLiveSeed] = useState(0)
+  // Whether a live call is running, so a restart (new tone, chapter jump) picks up where it was.
+  const liveActive = useRef(false)
   const togglesRef = useRef(toggles)
   togglesRef.current = toggles
   const send = (event: GuideEvent, t: Toggles = togglesRef.current) => setWalk((s) => guide(s, event, t))
@@ -46,6 +50,13 @@ export function App() {
     togglesRef.current = t
     setToggles(t)
     send({ type: 'goto', chapter: i }, t)
+    if (mode === 'live' && apiKey) {
+      // A live call can only take earlier conversation at connect, so a jump reconnects with it.
+      setLiveSeed(i)
+      setCallId((n) => n + 1)
+    } else if (mode === 'demo' && demo.entries.length === 0 && i > 0) {
+      demo.seed(historyBefore(i))
+    }
   }
 
   const demo = useDemo(toggles, voice, tone, (id) => send({ type: 'said', stepId: id }))
@@ -69,6 +80,7 @@ export function App() {
     togglesRef.current = ALL_OFF
     setToggles(ALL_OFF)
     setWalk(START)
+    setLiveSeed(0)
     setMode(m)
   }
 
@@ -76,7 +88,7 @@ export function App() {
   // one; the switches and the voice change on the open call and never touch this.
   const code = useMemo(() => makeConfirmationCode(), [callId])
   const config = useMemo(
-    () => (apiKey ? sessionConfig(apiKey, { toggles, voice, tone, confirmationCode: code }) : null),
+    () => (apiKey ? sessionConfig(apiKey, { toggles, voice, tone, confirmationCode: code }, historyBefore(liveSeed, code)) : null),
     [apiKey, callId], // eslint-disable-line react-hooks/exhaustive-deps
   )
 
@@ -137,13 +149,14 @@ export function App() {
           {mode === 'live' && (!apiKey || !config ? (
             <KeyEntry onKey={(k) => { setError(null); setApiKey(k) }} />
           ) : (
-            <AgentProvider key={callId} config={config} autoStart={callId > 0}
+            <AgentProvider key={callId} config={config} autoStart={callId > 0 && liveActive.current}
               onSdkError={(e) => setError(e.message)}
               onError={(e) => setError(e.description ?? 'The agent reported an error.')}>
               {guideEl}
               <LiveCall code={code} toggles={toggles} voice={voice} tone={tone} error={error} onError={setError}
                 onClearError={() => setError(null)} onForgetKey={() => { setApiKey(null); setError(null) }}
-                onUserLine={onUserLine} />
+                onUserLine={onUserLine} apiKey={apiKey} history={historyBefore(liveSeed, code)}
+                onActive={(a) => { liveActive.current = a }} />
             </AgentProvider>
           ))}
         </section>

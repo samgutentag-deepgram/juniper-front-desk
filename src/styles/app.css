@@ -170,6 +170,16 @@ mark.code { background: var(--dg-state-live); color: var(--dg-text-on-accent); p
 .guide-actions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-top: 10px; }
 .guide-actions:empty { display: none; }
 
+/* Live: the earlier part of the call when it started from a later chapter, and the turn in progress */
+.line.seeded { opacity: 0.7; }
+.line.interim { border-style: dashed; }
+.line.interim .caret {
+  display: inline-block; width: 2px; height: 1em; margin-left: 2px; vertical-align: text-bottom;
+  background: var(--dg-text-primary); animation: caret 1s steps(1) infinite;
+}
+@keyframes caret { 50% { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .line.interim .caret { animation: none; } }
+
 /* A/B dividers in the transcript */
 .transcript .divider { justify-self: stretch; display: flex; align-items: center; gap: 10px; color: var(--dg-text-label); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em; margin-top: 4px; }
 .transcript .divider::before, .transcript .divider::after { content: ''; flex: 1; border-top: 1px solid var(--dg-border); }

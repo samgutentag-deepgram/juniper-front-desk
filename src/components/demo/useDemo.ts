@@ -21,6 +21,8 @@ export interface DemoEntry {
   role: 'user' | 'assistant' | 'divider'
   text: string
   chips: { kind: ChipKind; text: string }[]
+  /** Part of the call so far after a chapter jump, not something Flux transcribed. */
+  seeded?: boolean
 }
 
 const asset = (url: string) => `${import.meta.env.BASE_URL}${url}`
@@ -136,6 +138,13 @@ export function useDemo(toggles: Toggles, voice: VoiceId, tone: number, onSaid: 
     setCallerTalking(false)
   }, [])
 
+  /** Fills in the call so far when the visitor jumps straight to a later chapter. */
+  const seed = useCallback((history: { role: 'user' | 'assistant'; content: string }[]) => {
+    push({ role: 'divider', text: 'Earlier in the call', chips: [] })
+    for (const h of history) push({ role: h.role, text: h.content, chips: [], seeded: true })
+    lastDivider.current = 'Earlier in the call'
+  }, [])
+
   const reset = useCallback(() => {
     run.current++
     callerAudio.current?.()
@@ -148,5 +157,5 @@ export function useDemo(toggles: Toggles, voice: VoiceId, tone: number, onSaid: 
     lastDivider.current = ''
   }, [])
 
-  return { entries, say, stop, reset, callerTalking, agentTalking }
+  return { entries, say, stop, seed, reset, callerTalking, agentTalking }
 }

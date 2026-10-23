@@ -2,6 +2,7 @@
 // say its lines with the switch off, flip it, say them again with it on. The phase follows the
 // switch, so a visitor can flip back and forth and hear the before and after as often as they like.
 
+import { DEMO_CODE, SCRIPT, spoken } from './script'
 import type { ToggleName, Toggles } from './toggles'
 
 export interface Chapter {
@@ -133,4 +134,25 @@ export function runLabel(state: GuideState): string {
   const ch = CHAPTERS[state.chapter]!
   if (!ch.toggle) return ch.title
   return `${ch.title} · ${state.phase === 'after' || state.phase === 'done' ? 'on' : 'off'}`
+}
+
+export interface HistoryLine { role: 'user' | 'assistant'; content: string }
+
+/** The conversation so far when a visitor jumps straight to a chapter: every scripted line before
+ *  it, with the earlier switches' fixed take (the vet's name lands, the sentence comes through
+ *  whole). On a live call this goes to the agent as context, so it knows about Otto and does not
+ *  ask his name again; on screen it shows as the earlier part of the call. */
+export function historyBefore(chapter: number, code: string = DEMO_CODE): HistoryLine[] {
+  const first = CHAPTERS[chapter]?.lines[0]
+  const stop = first ? SCRIPT.findIndex((s) => s.id === first) : -1
+  if (stop <= 0) return []
+  return SCRIPT.slice(0, stop).flatMap((step) => {
+    const reply = (typeof step.agent === 'string' ? step.agent : step.agent.on)
+      .replace('{heard}', 'Gutentag')
+      .replaceAll(DEMO_CODE, code)
+    return [
+      { role: 'user' as const, content: spoken(step) },
+      { role: 'assistant' as const, content: reply },
+    ]
+  })
 }

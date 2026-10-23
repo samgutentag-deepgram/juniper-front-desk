@@ -23,8 +23,8 @@ export function DemoCall({ demo }: { demo: ReturnType<typeof useDemo> }) {
           {demo.entries.map((e) => e.role === 'divider' ? (
             <li key={e.key} className="divider"><span>{e.text}</span></li>
           ) : (
-            <li key={e.key} className={`line ${e.role}`}>
-              <span className="who">{e.role === 'user' ? 'You, as Flux heard it' : 'Juniper front desk'}</span>
+            <li key={e.key} className={`line ${e.role}${e.seeded ? ' seeded' : ''}`}>
+              <span className="who">{e.role === 'user' ? (e.seeded ? 'You' : 'You, as Flux heard it') : 'Juniper front desk'}</span>
               <p>{withCode(e.text)}</p>
               {e.chips.map((c, i) => <span key={i} className={`chip ${c.kind}`}>{c.text}</span>)}
             </li>

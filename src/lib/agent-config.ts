@@ -52,22 +52,28 @@ export function speakSettings(voice: VoiceId, tone: number) {
   return { provider: { type: 'deepgram' as const, version: 'v2', model: voice, expressivity: tone } }
 }
 
-export function agentSettings(opts: CallOptions): AgentSettingsObject {
+export interface HistoryMessage { role: 'user' | 'assistant'; content: string }
+
+/** `history` is the call so far when a visitor jumps to a later chapter. The agent picks up from
+ *  it instead of greeting again. */
+export function agentSettings(opts: CallOptions, history: HistoryMessage[] = []): AgentSettingsObject {
   return {
     listen: listenSettings(opts.toggles),
     think: { provider: { ...THINK }, prompt: systemPrompt(opts.confirmationCode) },
     speak: speakSettings(opts.voice, opts.tone),
-    greeting: GREETING,
+    ...(history.length
+      ? { context: { messages: history.map((m) => ({ type: 'History' as const, ...m })) } }
+      : { greeting: GREETING }),
   } as AgentSettingsObject
 }
 
-export function sessionConfig(apiKey: string, opts: CallOptions): AgentSessionConfig {
+export function sessionConfig(apiKey: string, opts: CallOptions, history: HistoryMessage[] = []): AgentSessionConfig {
   return {
     // The visitor's own key, straight from their browser to Deepgram as a websocket subprotocol.
     // Not the template's server-minted token: that grant needs a key role many visitor keys lack
     // (403 "Insufficient permissions"), and this way the key never touches our server.
     auth: { apiKey },
-    agent: agentSettings(opts),
+    agent: agentSettings(opts, history),
     audio: {
       input: { encoding: 'linear16', sampleRate: 16_000 },
       output: { encoding: 'linear16', sampleRate: 24_000 },

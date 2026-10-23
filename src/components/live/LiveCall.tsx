@@ -2,6 +2,8 @@ import { useEffect, useRef } from 'react'
 import { useAgentControls, useAgentConversation, useAgentMicrophone, useAgentMode, useAgentState } from '@deepgram/react'
 import { listenSettings, speakSettings, type VoiceId } from '../../lib/agent-config'
 import type { Toggles } from '../../lib/toggles'
+import type { HistoryLine } from '../../lib/guide'
+import { useLiveCaptions } from './useLiveCaptions'
 import { CallPanel } from './CallPanel'
 import { Transcript } from './Transcript'
 import { useBeats } from './useBeats'
@@ -17,10 +19,16 @@ interface Props {
   onForgetKey: () => void
   /** Each new thing the caller says, for the walkthrough to match against its lines. */
   onUserLine: (text: string) => void
+  apiKey: string
+  /** The call so far, when it was started from a later chapter. */
+  history: HistoryLine[]
+  onActive: (active: boolean) => void
 }
 
 export function LiveCall(p: Props) {
-  const { isConnected } = useAgentState()
+  const { isConnected, isActive } = useAgentState()
+  useEffect(() => { p.onActive(isActive) }, [isActive]) // eslint-disable-line react-hooks/exhaustive-deps
+  const partial = useLiveCaptions(p.apiKey, p.toggles)
   const { mode } = useAgentMode()
   const { updateListen, updateSpeak } = useAgentControls()
   const { setMicMuted } = useAgentMicrophone()
@@ -58,7 +66,7 @@ export function LiveCall(p: Props) {
   return (
     <div className="convo">
       <CallPanel error={p.error} onError={p.onError} onClearError={p.onClearError} onForgetKey={p.onForgetKey} />
-      <Transcript beats={beats} code={p.code} />
+      <Transcript beats={beats} code={p.code} history={p.history} partial={partial} />
     </div>
   )
 }
