@@ -8,14 +8,28 @@ Bring your own Deepgram key; there is nothing else to install and no LLM key.
 
 ## What to try
 
-1. **Talk over it.** Ask what happens at a first wellness exam and cut in mid-answer. It stops and
-   answers what you actually asked.
-2. **Say a name it has never heard.** Ask for Doctor Gutentag with clinic vocabulary off, and watch
-   the transcript. Flip keyterms on mid-call and say it again. No reconnect.
-3. **Book a time.** It reads back a booking reference like `JV-7Q3K` and a phone number, spoken the
-   way a person reads them.
-4. **Change the voice and tone.** Swap Flux TTS voices live, and pick calm, default or animated
-   delivery.
+Your lines are on the left. Three switches are on the right, all off to start: say a line, hear it
+fail, flip its switch, say it again.
+
+| Switch | Off | On |
+|---|---|---|
+| Barge-in | It finishes talking no matter what, and you are not heard | It stops mid-sentence and answers your new question |
+| Keyterms | "Doctor Gutentag" comes out wrong and the lookup finds nobody | The staff list goes to Flux mid-call and the name lands |
+| Smart end of turn | A one-second pause ends your turn, so it answers half a sentence | Flux hears "and, um" is not finished and waits |
+
+Then book a time and hear Flux TTS read back a booking reference and a phone number in the voice and
+tone you pick.
+
+**No key?** The default tab is a click-through replay. Every line was voiced with Flux TTS and every
+caller line transcribed by Flux, once with each switch off and once on, so the before and after are
+real output. They are also chosen: TTS takes vary, and for the end-of-turn pair the renderer keeps
+the first take where the timer splits the sentence and Flux does not. The first render came out the
+other way round. Try the line live before quoting the replay as typical. `scripts/render-demo.ts`
+regenerates it.
+
+**Want the numbers?** Latency, end-of-turn confidence and the eager end-of-turn trade live in
+[hold-please](https://github.com/samgutentag-deepgram/hold-please), the raw-socket version of this
+demo from the Vonage Tech Week talk.
 
 ## Run it locally
 
@@ -45,6 +59,14 @@ Fly.io, one app: `fly deploy`. No secrets to set.
 ## License
 
 MIT
+
+## Regenerate the replay
+
+```bash
+DEEPGRAM_API_KEY=... pnpm exec tsx scripts/render-demo.ts
+```
+
+Needs ffmpeg at render time only. Writes `public/demo/*.mp3` and `src/lib/demo-manifest.json`.
 
 ## Smoke test without a microphone
 

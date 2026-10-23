@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useAgentConversation, useAgentMode, useAgentSession } from '@deepgram/react'
-import { nameHeard, saidCode, type NameHeard } from '../lib/beats'
+import { nameHeard, saidCode, type NameHeard } from '../../lib/beats'
 
 export interface Beats {
   /** Agent lines the caller talked over. */

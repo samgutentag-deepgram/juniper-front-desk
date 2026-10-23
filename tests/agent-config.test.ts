@@ -1,8 +1,9 @@
 import { describe, expect, it } from 'vitest'
 import { agentSettings, listenSettings, sessionConfig, speakSettings } from '../src/lib/agent-config'
 import { KEYTERMS, makeConfirmationCode } from '../src/lib/clinic'
+import { ALL_OFF, DUMB_EOT, SMART_EOT } from '../src/lib/toggles'
 
-const opts = { confirmationCode: 'JV-7Q3K', voice: 'flux-haley-en' as const, tone: 0, keyterms: false }
+const opts = { confirmationCode: 'JV-7Q3K', voice: 'flux-haley-en' as const, tone: 0, toggles: ALL_OFF }
 
 describe('agent settings', () => {
   const s = agentSettings(opts) as Record<string, any>
@@ -31,8 +32,18 @@ describe('agent settings', () => {
 
 describe('live updates', () => {
   it('keyterms on sends the staff list, off clears it', () => {
-    expect(listenSettings(true).provider.keyterms).toEqual(KEYTERMS)
-    expect(listenSettings(false).provider.keyterms).toEqual([])
+    expect(listenSettings({ ...ALL_OFF, keyterms: true }).provider.keyterms).toEqual(KEYTERMS)
+    expect(listenSettings(ALL_OFF).provider.keyterms).toEqual([])
+  })
+
+  it('smart end of turn off is a silence timer, on is Flux deciding', () => {
+    expect(listenSettings(ALL_OFF).provider).toMatchObject(DUMB_EOT)
+    expect(listenSettings({ ...ALL_OFF, smartEot: true }).provider).toMatchObject(SMART_EOT)
+  })
+
+  it('every update carries every switch, because UpdateListen replaces the block', () => {
+    const p = listenSettings({ bargeIn: true, keyterms: true, smartEot: true }).provider
+    expect(p).toMatchObject({ version: 'v2', model: 'flux-general-en', keyterms: KEYTERMS, ...SMART_EOT })
   })
 
   it('a voice swap keeps Flux TTS on v2', () => {

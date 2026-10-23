@@ -5,6 +5,7 @@
 import { AgentSession } from '@deepgram/agents'
 import { agentSettings, listenSettings, speakSettings } from '../src/lib/agent-config'
 import { makeConfirmationCode } from '../src/lib/clinic'
+import { ALL_OFF } from '../src/lib/toggles'
 import { nameHeard, saidCode } from '../src/lib/beats'
 
 const key = process.env.DEEPGRAM_API_KEY
@@ -34,7 +35,7 @@ async function synth(text: string): Promise<Buffer> {
 const code = makeConfirmationCode()
 const session = new AgentSession({
   auth: { apiKey: key },
-  agent: agentSettings({ confirmationCode: code, voice: 'flux-haley-en', tone: 0, keyterms: false }),
+  agent: agentSettings({ confirmationCode: code, voice: 'flux-haley-en', tone: 0, toggles: { ...ALL_OFF, smartEot: true } }),
   audio: { input: { encoding: 'linear16', sampleRate: RATE }, output: { encoding: 'linear16', sampleRate: 24_000 } },
   reconnect: { enabled: false },
 })
@@ -103,7 +104,7 @@ try {
   const off = [...lines].reverse().find((l) => l.role === 'user' && nameHeard(l.content))
   console.log(`  keyterms off heard: ${off ? nameHeard(off.content)?.text : '(no name match)'}`)
   const listenUpdated = once('listen-updated', 10_000)
-  session.updateListen(listenSettings(true) as never)
+  session.updateListen(listenSettings({ ...ALL_OFF, smartEot: true, keyterms: true }) as never)
   await listenUpdated
   ok('UpdateListen with keyterms accepted mid-call (no reconnect)', true)
   await turn('Can he see Doctor Gutentag?')

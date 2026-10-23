@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { useAgentConversation } from '@deepgram/react'
-import { splitOnCode } from '../lib/beats'
+import { splitOnCode } from '../../lib/beats'
 import type { Beats } from './useBeats'
 
 export function Transcript({ beats, code }: { beats: Beats; code: string }) {

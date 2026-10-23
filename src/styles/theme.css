@@ -17,6 +17,7 @@
 :root {
   /* text */
   --dg-text-primary: var(--dg-ink-primary);
+  --dg-font-code: var(--dg-font-mono);
   --dg-text-body: var(--dg-ink-secondary);
   --dg-text-label: var(--dg-ink-muted);
   --dg-text-disabled: var(--dg-ink-faint);

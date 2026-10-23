@@ -3,6 +3,7 @@
 // point at a monorepo path that is not in the published tarball.
 import type { AgentSessionConfig, AgentSettingsObject } from '@deepgram/agents'
 import { GREETING, KEYTERMS, systemPrompt } from './clinic'
+import { DUMB_EOT, SMART_EOT, type Toggles } from './toggles'
 
 export const LISTEN_MODEL = 'flux-general-en'
 
@@ -30,17 +31,19 @@ export interface CallOptions {
   confirmationCode: string
   voice: VoiceId
   tone: number
-  keyterms: boolean
+  toggles: Toggles
 }
 
-export function listenSettings(keyterms: boolean) {
+/** The whole listen block. UpdateListen replaces it, so every switch is sent every time. */
+export function listenSettings(toggles: Toggles) {
   return {
     provider: {
       type: 'deepgram' as const,
       version: 'v2' as const,
       model: LISTEN_MODEL,
       // An empty list clears keyterms on Flux, which is what "off" means mid-call.
-      keyterms: keyterms ? [...KEYTERMS] : [],
+      keyterms: toggles.keyterms ? [...KEYTERMS] : [],
+      ...(toggles.smartEot ? SMART_EOT : DUMB_EOT),
     },
   }
 }
@@ -51,7 +54,7 @@ export function speakSettings(voice: VoiceId, tone: number) {
 
 export function agentSettings(opts: CallOptions): AgentSettingsObject {
   return {
-    listen: listenSettings(opts.keyterms),
+    listen: listenSettings(opts.toggles),
     think: { provider: { ...THINK }, prompt: systemPrompt(opts.confirmationCode) },
     speak: speakSettings(opts.voice, opts.tone),
     greeting: GREETING,

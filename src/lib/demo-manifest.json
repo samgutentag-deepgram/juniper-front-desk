@@ -1,0 +1,201 @@
+{
+  "callerVoice": "flux-cole-en",
+  "agentVoice": "flux-haley-en",
+  "rendered": "2026-10-23",
+  "steps": {
+    "adopted": {
+      "caller": "demo/adopted-caller.mp3",
+      "callerMs": 3280,
+      "off": {
+        "heard": [
+          "Hi. I just adopted a dog, and he needs a vet."
+        ],
+        "text": "That's wonderful, congratulations! What's his name?",
+        "url": "demo/adopted-agent.mp3",
+        "ms": 3120
+      },
+      "on": {
+        "heard": [
+          "Hi. I just adopted a dog, and he needs a vet."
+        ],
+        "text": "That's wonderful, congratulations! What's his name?",
+        "url": "demo/adopted-agent.mp3",
+        "ms": 3120
+      }
+    },
+    "otto": {
+      "caller": "demo/otto-caller.mp3",
+      "callerMs": 1280,
+      "off": {
+        "heard": [
+          "His name is Otto."
+        ],
+        "text": "Hello Otto! How can I help with him?",
+        "url": "demo/otto-agent.mp3",
+        "ms": 3120
+      },
+      "on": {
+        "heard": [
+          "His name is Otto."
+        ],
+        "text": "Hello Otto! How can I help with him?",
+        "url": "demo/otto-agent.mp3",
+        "ms": 3120
+      }
+    },
+    "exam": {
+      "caller": "demo/exam-caller.mp3",
+      "callerMs": 2080,
+      "off": {
+        "heard": [
+          "What happens at his first wellness exam?"
+        ],
+        "text": "At his first wellness exam the vet does a nose to tail check: his weight, heart and lungs, eyes, ears, teeth, skin and joints. We'll run a heartworm test, and a fecal test too, so bring a stool sample if you can. He'll get the core vaccines a new dog usually needs. Then the microchip goes in, a quick injection between the shoulder blades, no anesthesia, and it's registered to you that day. The whole visit takes about forty five minutes.",
+        "url": "demo/exam-agent.mp3",
+        "ms": 33200
+      },
+      "on": {
+        "heard": [
+          "What happens at his first wellness exam?"
+        ],
+        "text": "At his first wellness exam the vet does a nose to tail check: his weight, heart and lungs, eyes, ears, teeth, skin and joints. We'll run a heartworm test, and a fecal test too, so bring a stool sample if you can. He'll get the core vaccines a new dog usually needs. Then the microchip goes in, a quick injection between the shoulder blades, no anesthesia, and it's registered to you that day. The whole visit takes about forty five minutes.",
+        "url": "demo/exam-agent.mp3",
+        "ms": 33200
+      }
+    },
+    "cut-in": {
+      "caller": "demo/cut-in-caller.mp3",
+      "callerMs": 2480,
+      "off": {
+        "heard": [
+          "Sorry. Actually, can we just get him signed up?"
+        ],
+        "text": "Of course, I can set him up as a new patient. Is there a vet you'd like him to see?",
+        "url": "demo/cut-in-agent.mp3",
+        "ms": 4160
+      },
+      "on": {
+        "heard": [
+          "Sorry. Actually, can we just get him signed up?"
+        ],
+        "text": "Of course, I can set him up as a new patient. Is there a vet you'd like him to see?",
+        "url": "demo/cut-in-agent.mp3",
+        "ms": 4160
+      }
+    },
+    "name": {
+      "caller": "demo/name-caller.mp3",
+      "callerMs": 1920,
+      "off": {
+        "heard": [
+          "Can he see Doctor. Gudentag?"
+        ],
+        "text": "I don't see a Doctor Gudentag at our clinic. Could you say the vet's name once more?",
+        "url": "demo/name-agent-off.mp3",
+        "ms": 6000
+      },
+      "on": {
+        "heard": [
+          "Can he see Doctor. Gutentag?"
+        ],
+        "text": "Yes, Doctor Gutentag is seeing new patients. He has Thursday at two in the afternoon, or Friday at ten in the morning or one in the afternoon.",
+        "url": "demo/name-agent-on.mp3",
+        "ms": 8080
+      }
+    },
+    "ramble": {
+      "caller": "demo/ramble-caller.mp3",
+      "callerMs": 10680,
+      "firstPart": "demo/ramble-caller-1.mp3",
+      "firstPartMs": 4640,
+      "off": {
+        "heard": [
+          "So a work from home most days, but on Tuesdays. And",
+          "Thursdays, I'm in the office. So what do you have later in the week?"
+        ],
+        "text": "Got it. Doctor Gutentag has Thursday at two in the afternoon. Does that work?",
+        "url": "demo/ramble-agent-off.mp3",
+        "ms": 7600
+      },
+      "on": {
+        "heard": [
+          "So a work from home most days, but on Tuesdays and Thursdays, I'm in the office. So what do you have later in the week?"
+        ],
+        "text": "Later in the week, Doctor Gutentag has Friday at ten in the morning or one in the afternoon. Which works for you?",
+        "url": "demo/ramble-agent-on.mp3",
+        "ms": 6640
+      }
+    },
+    "booking": {
+      "caller": "demo/booking-caller.mp3",
+      "callerMs": 2800,
+      "off": {
+        "heard": [
+          "Friday at ten. Actually, let's make it one."
+        ],
+        "text": "You'd like to bring Otto in on Friday at one in the afternoon. Your booking reference is JV-7Q3K. The front desk will text you from 415-555-0142 to confirm. Is there anything else?",
+        "url": "demo/booking-agent.mp3",
+        "ms": 18320
+      },
+      "on": {
+        "heard": [
+          "Friday at ten. Actually, let's make it one."
+        ],
+        "text": "You'd like to bring Otto in on Friday at one in the afternoon. Your booking reference is JV-7Q3K. The front desk will text you from 415-555-0142 to confirm. Is there anything else?",
+        "url": "demo/booking-agent.mp3",
+        "ms": 18320
+      }
+    },
+    "again": {
+      "caller": "demo/again-caller.mp3",
+      "callerMs": 1920,
+      "off": {
+        "heard": [
+          "Can you read me that reference once more?"
+        ],
+        "text": "Sure. Your booking reference is JV-7Q3K, and the front desk will text you from 415-555-0142.",
+        "url": "demo/again-agent.mp3",
+        "ms": 12480
+      },
+      "on": {
+        "heard": [
+          "Can you read me that reference once more?"
+        ],
+        "text": "Sure. Your booking reference is JV-7Q3K, and the front desk will text you from 415-555-0142.",
+        "url": "demo/again-agent.mp3",
+        "ms": 12480
+      }
+    },
+    "bye": {
+      "caller": "demo/bye-caller.mp3",
+      "callerMs": 1440,
+      "off": {
+        "heard": [
+          "That's all for now. Thank you."
+        ],
+        "text": "You are welcome. We look forward to meeting Otto.",
+        "url": "demo/bye-agent.mp3",
+        "ms": 7760
+      },
+      "on": {
+        "heard": [
+          "That's all for now. Thank you."
+        ],
+        "text": "You are welcome. We look forward to meeting Otto.",
+        "url": "demo/bye-agent.mp3",
+        "ms": 7760
+      }
+    }
+  },
+  "variants": {
+    "flux-haley-en:-2": "demo/again-flux-haley-en--2.mp3",
+    "flux-haley-en:0": "demo/again-flux-haley-en-0.mp3",
+    "flux-haley-en:2": "demo/again-flux-haley-en-2.mp3",
+    "flux-kit-en:-2": "demo/again-flux-kit-en--2.mp3",
+    "flux-kit-en:0": "demo/again-flux-kit-en-0.mp3",
+    "flux-kit-en:2": "demo/again-flux-kit-en-2.mp3",
+    "flux-alexis-en:-2": "demo/again-flux-alexis-en--2.mp3",
+    "flux-alexis-en:0": "demo/again-flux-alexis-en-0.mp3",
+    "flux-alexis-en:2": "demo/again-flux-alexis-en-2.mp3"
+  }
+}

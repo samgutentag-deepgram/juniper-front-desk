@@ -6,4 +6,5 @@ export const CREDIT_CTA = {
   url: 'https://console.deepgram.com/signup?utm_source=lifecycle&utm_medium=email&utm_campaign=flux-tts-credit&utm_content=juniper-front-desk',
 }
 
-export const SOURCE_URL = ''
+/** The talk demo on raw Flux sockets, with the latency and end-of-turn stats this page leaves out. */
+export const HOLD_PLEASE_URL = 'https://github.com/samgutentag-deepgram/hold-please'

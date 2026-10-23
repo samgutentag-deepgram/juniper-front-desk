@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useAgentConversation, useAgentMicrophone, useAgentMode, useAgentPlayer, useAgentSession, useAgentState } from '@deepgram/react'
-import { friendlyError } from '../lib/errors'
+import { friendlyError } from '../../lib/errors'
 import { AgentMicrophoneButton, Orb } from '@deepgram/ui'
 
 interface Props {
@@ -54,7 +54,7 @@ export function CallPanel({ error, onError, onClearError, onForgetKey }: Props) 
       </div>
       {error && <p className="error" role="alert">{friendlyError(error, callStarted)}</p>}
       {conversation.length === 0 && (
-        <p className="muted">Press Start, allow the microphone, and say “Hi, I just adopted a dog.”</p>
+        <p className="muted">Press Start, allow the microphone, and read your first line below.</p>
       )}
     </div>
   )
