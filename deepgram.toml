@@ -1,0 +1,33 @@
+[meta]
+title = "Juniper Front Desk"
+description = "Call a vet clinic front desk from your browser: Flux listening, Flux TTS speaking, on the Voice Agent API with your own key"
+author = "Sam Gutentag <sam.gutentag@deepgram.com>"
+useCase = "voice-agent"
+language = "typescript"
+framework = "react"
+sdk = "@deepgram/react"
+tags = ["voice-agent", "flux", "flux-tts", "react", "typescript"]
+
+[check]
+command = ["make check"]
+message = "Typecheck passed and style pack sealed"
+
+[install]
+command = ["make install"]
+message = "Dependencies installed"
+
+[install.config]
+sample = "sample.env"
+output = ".env"
+
+[start]
+command = ["make start"]
+message = "Running at http://localhost:8081"
+
+[test]
+command = ["make test"]
+message = "Tests passed"
+
+[clean]
+command = ["make clean"]
+message = "Build artifacts cleaned"

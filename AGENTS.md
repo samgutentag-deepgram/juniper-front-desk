@@ -1,0 +1,48 @@
+# AGENTS.md
+
+**Juniper Front Desk** is a self-serve voice agent demo: a vet clinic front desk you call from the
+browser. The visitor brings their own Deepgram key. It runs on the Deepgram Voice Agent API with
+Flux listening (`flux-general-en`, v2), Flux TTS speaking (`flux-*-en`, v2) and a Deepgram-hosted
+LLM (`anthropic` / `claude-haiku-4-5`), so there is no LLM key. The clinic and its prompt are
+ported from the Tech Week talk demo, `hold-please`.
+
+## Stack, resolved 2026-10-23
+
+React 19.3 + Vite 8, TypeScript 7, `@deepgram/react` 0.2.0, `@deepgram/ui` 0.1.6,
+`@deepgram/agents` 0.2.0, Express 5.3 (static only), Vitest 5, pnpm 12, Node 22.
+`pnpm-workspace.yaml` overrides `@deepgram/react` and `@deepgram/agents` to 0.2.0, because
+`@deepgram/ui` 0.1.6 still pins 0.1.x and two copies means two React contexts.
+
+## Auth, a deliberate divergence from the demo template
+
+The template mints short-lived tokens from a server key. Here **there is no server key**: the
+visitor pastes their own, and `@deepgram/agents` sends it from the browser straight to Deepgram as
+a websocket subprotocol. Express only serves static files and never sees the key. Tried and
+dropped 2026-10-23: a server route that traded the visitor key for a token. `/v1/auth/grant`
+returns 403 "Insufficient permissions" for keys without a high enough role, which many visitor
+keys are, and it put the key on our server for no gain. Never log the key, never put it in a URL,
+never persist it in the browser: it lives in React state and a reload drops it.
+
+## Where things are
+
+| File | Holds |
+|---|---|
+| `src/lib/agent-config.ts` | Every session setting. The file a reader forks |
+| `src/lib/clinic.ts` | The clinic, the prompt, keyterms, booking reference |
+| `src/lib/beats.ts` | What the walkthrough detects in the transcript |
+| `src/lib/cta.ts` | The credit call to action, copy and link |
+| `src/server/index.ts` | Static serving only |
+| `scripts/smoke.ts` | Live end-to-end check, synthesized caller, no mic |
+
+## Rules
+
+Literal colors, fonts, and radii live only in `src/styles/packs/`. Everywhere else uses
+`var(--dg-*)`. `make check` enforces this.
+
+Flux TTS `expressivity` is fixed for a session, so changing tone restarts the call. Voice and
+keyterms change live with `UpdateSpeak` and `UpdateListen`.
+
+## Run
+
+`make install`, then `pnpm dev` (Vite on 8080, API on 8081) or `make start` (one port, 8081
+locally, 8080 on Fly). `make check` and `make test` before committing.

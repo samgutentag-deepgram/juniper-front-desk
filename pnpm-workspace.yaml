@@ -1,0 +1,9 @@
+# @deepgram/ui 0.1.6 still pins @deepgram/react ^0.1.0. Two copies means two React contexts and the
+# components never see the provider, so force the one we depend on.
+overrides:
+  '@deepgram/react': 0.2.0
+  '@deepgram/agents': 0.2.0
+allowBuilds:
+  esbuild: true
+minimumReleaseAgeExclude:
+  - '@deepgram/sdk@5.16.0'
