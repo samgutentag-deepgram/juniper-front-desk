@@ -64,6 +64,7 @@
   --dg-radius-md: 10px;
   --dg-radius-lg: 16px;
   --dg-radius-round: 50%;
+  --dg-radius-pill: 9999px;
 
   /* ---- elevation -------------------------------------------------------- */
   --dg-shadow-panel: 0 18px 48px rgba(0, 0, 0, 0.65);

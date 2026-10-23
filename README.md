@@ -8,8 +8,9 @@ Bring your own Deepgram key; there is nothing else to install and no LLM key.
 
 ## What to try
 
-Your lines are on the left. Three switches are on the right, all off to start: say a line, hear it
-fail, flip its switch, say it again.
+A guided walkthrough, one chapter per switch, each an A/B: say the chapter's lines with its switch
+off, the guide asks you to flip it, then say them again with it on. Flip back and forth as often as
+you like; the transcript marks each run "off" or "on".
 
 | Switch | Off | On |
 |---|---|---|

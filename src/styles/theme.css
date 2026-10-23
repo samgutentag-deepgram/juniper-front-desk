@@ -9,7 +9,7 @@
    names from the pack. Semantic names survive a rebrand; palette names do not.
    ========================================================================== */
 
-@import "./packs/flux-2026.css";
+@import "./packs/flux-2026-light.css";
 
 /* ---------------------------------------------------------------------------
    1. SEMANTIC LAYER. This is what your components use.
@@ -56,6 +56,7 @@
   --dg-shape-panel: var(--dg-radius-md);
   --dg-shape-surface: var(--dg-radius-lg);
   --dg-shape-orb: var(--dg-radius-round);
+  --dg-shape-pill: var(--dg-radius-pill);
 
   --dg-elevation-panel: var(--dg-shadow-panel);
   --dg-elevation-soft: var(--dg-shadow-soft);

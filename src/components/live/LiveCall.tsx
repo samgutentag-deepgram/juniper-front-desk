@@ -1,9 +1,7 @@
-import { useEffect, useMemo, useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import { useAgentControls, useAgentConversation, useAgentMicrophone, useAgentMode, useAgentState } from '@deepgram/react'
 import { listenSettings, speakSettings, type VoiceId } from '../../lib/agent-config'
-import { matchStep, SCRIPT } from '../../lib/script'
 import type { Toggles } from '../../lib/toggles'
-import { ScriptList } from '../ScriptList'
 import { CallPanel } from './CallPanel'
 import { Transcript } from './Transcript'
 import { useBeats } from './useBeats'
@@ -17,7 +15,8 @@ interface Props {
   onError: (message: string) => void
   onClearError: () => void
   onForgetKey: () => void
-  onNext: (stepId: string | null) => void
+  /** Each new thing the caller says, for the walkthrough to match against its lines. */
+  onUserLine: (text: string) => void
 }
 
 export function LiveCall(p: Props) {
@@ -46,25 +45,20 @@ export function LiveCall(p: Props) {
     if (!shouldMute && mutedByUs.current) { mutedByUs.current = false; setMicMuted(false) }
   }, [p.toggles.bargeIn, mode, setMicMuted])
 
-  // Script progress from what the caller actually said.
-  const done = useMemo(() => {
-    const ids = new Set<number>()
+  // Hand each new caller line to the walkthrough once.
+  const seen = useRef(new Set<string>())
+  useEffect(() => {
     for (const e of conversation) {
-      if (e.role !== 'user') continue
-      const i = matchStep(e.content, ids)
-      if (i !== null) ids.add(i)
+      if (e.role !== 'user' || seen.current.has(e.id)) continue
+      seen.current.add(e.id)
+      p.onUserLine(e.content)
     }
-    return new Set([...ids].map((i) => SCRIPT[i]!.id))
-  }, [conversation])
-  const next = SCRIPT.find((s) => !done.has(s.id))?.id ?? null
-  useEffect(() => { p.onNext(next) }, [next]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [conversation]) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <div className="convo">
       <CallPanel error={p.error} onError={p.onError} onClearError={p.onClearError} onForgetKey={p.onForgetKey} />
       <Transcript beats={beats} code={p.code} />
-      <h3 className="script-title">Your lines, say them out loud</h3>
-      <ScriptList done={done} next={next} />
     </div>
   )
 }

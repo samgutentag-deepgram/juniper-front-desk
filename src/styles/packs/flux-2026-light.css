@@ -1,0 +1,89 @@
+/* ============================================================================
+   Deepgram style pack: flux-2026-light
+   ----------------------------------------------------------------------------
+   The light counterpart of flux-2026. Same token names, so theme.css and
+   every component work unchanged; only these values differ.
+
+   The dark pack's electric green and pink fail contrast on white, so the
+   accent here is a deep green (5.2:1 on white) and accent-alt a magenta
+   (6.2:1). Checked 2026-10-23: body ink 17:1 on the page, muted ink 5.3:1
+   on the wells, the switch track 3:1 against white.
+   ========================================================================== */
+
+:root {
+  color-scheme: light;
+
+  /* ---- palette: surfaces -------------------------------------------------
+     Off-white page, white panels, light grey wells for the transcript. */
+  --dg-surface-page: #f6f7f9;
+  --dg-surface-raised: rgba(255, 255, 255, 0.96);
+  --dg-surface-glass: rgba(255, 255, 255, 0.82);
+  --dg-surface-scrim: rgba(15, 15, 20, 0.3);
+  --dg-surface-deep: #eef0f3;
+
+  /* ---- palette: ink ----------------------------------------------------- */
+  --dg-ink-primary: #14141a;   /* deliberately not pure black */
+  --dg-ink-secondary: #34343c;
+  --dg-ink-muted: #62626b;
+  --dg-ink-faint: #8e8e96;
+
+  /* ---- palette: strokes ------------------------------------------------- */
+  --dg-line-hairline: rgba(10, 10, 20, 0.10);
+  --dg-line-hover: rgba(10, 10, 20, 0.20);
+  --dg-line-active: rgba(10, 10, 20, 0.34);
+
+  /* ---- palette: accent --------------------------------------------------
+     One electric green, used sparingly. Live state, success, focus ring.
+     accent-alt is the second identity color, for per-voice differentiation. */
+  --dg-accent: #0b7d4f;
+  --dg-accent-dim: #d9f3e6;
+  --dg-accent-alt: #b4236c;
+
+  /* ---- palette: grey ramp ----------------------------------------------- */
+  --dg-grey-100: #ffffff;
+  --dg-grey-200: #6b6b73;
+  --dg-grey-300: #9a9aa2;
+  --dg-grey-400: #c4c4cc;
+  --dg-grey-500: #8e8f98;
+
+  /* ---- type -------------------------------------------------------------
+     Space Grotesk for display and numerals, Inter for UI, Fira Code for
+     anything technical. Self-host these if the demo needs a strict CSP. */
+  --dg-font-display: "Space Grotesk", system-ui, sans-serif;
+  --dg-font-ui: "Inter", system-ui, sans-serif;
+  --dg-font-mono: "Fira Code", ui-monospace, Menlo, monospace;
+
+  --dg-weight-regular: 400;
+  --dg-weight-medium: 500;
+
+  /* ---- geometry --------------------------------------------------------- */
+  --dg-radius-sm: 6px;
+  --dg-radius-md: 10px;
+  --dg-radius-lg: 16px;
+  --dg-radius-round: 50%;
+  --dg-radius-pill: 9999px;
+
+  /* ---- elevation -------------------------------------------------------- */
+  --dg-shadow-panel: 0 8px 24px rgba(20, 20, 40, 0.08);
+  --dg-shadow-soft: 0 4px 12px rgba(20, 20, 40, 0.06);
+  --dg-blur-glass: 18px;
+
+  /* ---- motion -----------------------------------------------------------
+     The orb breathes on a 6s cycle when idle. The ambient canvas drifts far
+     slower than that. Both are identity, not decoration. */
+  --dg-motion-breathe: 6s;
+  --dg-motion-fast: 160ms;
+  --dg-motion-base: 280ms;
+  --dg-ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --dg-orb-glow-blur: 8px;
+}
+
+/* Both signature motifs must stop when asked. The reference implementation
+   does not do this; do not inherit that bug. */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dg-motion-breathe: 0s;
+    --dg-motion-fast: 0s;
+    --dg-motion-base: 0s;
+  }
+}

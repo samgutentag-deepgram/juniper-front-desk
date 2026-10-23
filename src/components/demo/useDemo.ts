@@ -18,19 +18,24 @@ const VARIANTS = manifest.variants as Record<string, string>
 export type ChipKind = 'ok' | 'warn' | 'live'
 export interface DemoEntry {
   key: number
-  role: 'user' | 'assistant'
+  role: 'user' | 'assistant' | 'divider'
   text: string
   chips: { kind: ChipKind; text: string }[]
 }
 
 const asset = (url: string) => `${import.meta.env.BASE_URL}${url}`
 
-export function useDemo(toggles: Toggles, voice: VoiceId, tone: number) {
+/** `onSaid` fires when a caller line lands, heard or not, so the walkthrough can move on. */
+export function useDemo(toggles: Toggles, voice: VoiceId, tone: number, onSaid: (id: string) => void) {
+  const onSaidRef = useRef(onSaid)
+  onSaidRef.current = onSaid
+  const lastDivider = useRef('')
   const [entries, setEntries] = useState<DemoEntry[]>([])
   const [done, setDone] = useState<Set<string>>(new Set())
   const [callerTalking, setCallerTalking] = useState(false)
   const [agentTalking, setAgentTalking] = useState(false)
   const agentAudio = useRef<{ el: HTMLAudioElement; entryKey: number; stop: () => void } | null>(null)
+  const callerAudio = useRef<(() => void) | null>(null)
   const seq = useRef(0)
   const run = useRef(0)
 
@@ -50,10 +55,15 @@ export function useDemo(toggles: Toggles, voice: VoiceId, tone: number) {
       el.play().then(() => onStart?.(el, stop), () => resolve('ended'))
     })
 
-  const say = useCallback(async (id: string) => {
+  /** Says a line. `label` names the run, and starts a divider in the transcript when it changes. */
+  const say = useCallback(async (id: string, label?: string) => {
     const step = SCRIPT.find((s) => s.id === id)
     const audio = STEPS[id]
     if (!step || !audio) return
+    if (label && label !== lastDivider.current) {
+      lastDivider.current = label
+      push({ role: 'divider', text: label, chips: [] })
+    }
     const on = step.toggle ? toggles[step.toggle] : false
     const take = on ? audio.on : audio.off
     const myRun = run.current
@@ -65,7 +75,8 @@ export function useDemo(toggles: Toggles, voice: VoiceId, tone: number) {
         setCallerTalking(true)
         await play(audio.caller)
         setCallerTalking(false)
-        push({ role: 'user', text: take.heard.join(' '), chips: [{ kind: 'warn', text: 'Not heard: barge-in is off. Turn it on, ask the long question again, and cut in.' }] })
+        push({ role: 'user', text: take.heard.join(' '), chips: [{ kind: 'warn', text: 'Not heard: barge-in is off' }] })
+        onSaidRef.current(id)
         return
       }
       const { el, entryKey, stop } = speaking
@@ -84,7 +95,8 @@ export function useDemo(toggles: Toggles, voice: VoiceId, tone: number) {
     // The caller's line, and what Flux made of it.
     setCallerTalking(true)
     const splitTurn = step.toggle === 'smartEot' && !on && take.heard.length > 1 && audio.firstPart
-    await play(splitTurn ? audio.firstPart! : audio.caller)
+    await play(splitTurn ? audio.firstPart! : audio.caller, (_el, stop) => { callerAudio.current = stop })
+    callerAudio.current = null
     setCallerTalking(false)
     if (run.current !== myRun) return
 
@@ -95,6 +107,7 @@ export function useDemo(toggles: Toggles, voice: VoiceId, tone: number) {
     if (step.toggle === 'smartEot' && on) chips.push({ kind: 'ok', text: 'Flux waited through the pause' })
     push({ role: 'user', text: splitTurn ? take.heard[0]! : take.heard.join(' '), chips })
     setDone((d) => new Set(d).add(id))
+    onSaidRef.current(id)
 
     // The reply. The voice beat swaps in the take for the chosen voice and tone.
     const replyUrl = (id === 'again' && VARIANTS[`${voice}:${tone}`]) || take.url
@@ -110,16 +123,34 @@ export function useDemo(toggles: Toggles, voice: VoiceId, tone: number) {
     }
   }, [toggles, voice, tone])
 
+  /** Silence, now: whatever is playing stops and nothing queued after it plays. The conversation stays. */
+  const stop = useCallback(() => {
+    run.current++
+    callerAudio.current?.()
+    callerAudio.current = null
+    const speaking = agentAudio.current
+    if (speaking) {
+      speaking.stop()
+      setEntries((xs) => xs.map((e) => e.key === speaking.entryKey ? { ...e, text: `${e.text.split(' ').slice(0, Math.max(1, Math.round(e.text.split(' ').length * (speaking.el.duration ? speaking.el.currentTime / speaking.el.duration : 0.5)))).join(' ')}…`, chips: [...e.chips, { kind: 'warn', text: 'Stopped' }] } : e))
+    }
+    agentAudio.current = null
+    setAgentTalking(false)
+    setCallerTalking(false)
+  }, [])
+
   const reset = useCallback(() => {
     run.current++
+    callerAudio.current?.()
+    callerAudio.current = null
     agentAudio.current?.stop()
     agentAudio.current = null
     setAgentTalking(false)
     setCallerTalking(false)
     setEntries([])
     setDone(new Set())
+    lastDivider.current = ''
   }, [])
 
   const next = SCRIPT.find((s) => !done.has(s.id))?.id ?? null
-  return { entries, done, next, say, reset, callerTalking, agentTalking }
+  return { entries, done, next, say, stop, reset, callerTalking, agentTalking }
 }

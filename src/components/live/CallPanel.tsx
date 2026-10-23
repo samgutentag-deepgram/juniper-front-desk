@@ -29,7 +29,7 @@ export function CallPanel({ error, onError, onClearError, onForgetKey }: Props) 
   return (
     <div className="call-panel">
       <div className="call-head">
-        <Orb state={orbState} size={140} getInputVolume={getInputVolume} getOutputVolume={getOutputVolume} />
+        <Orb state={orbState} size={72} getInputVolume={getInputVolume} getOutputVolume={getOutputVolume} />
         <div className="call-controls">
           <p className="mode" aria-live="polite">{isActive ? modeLabel(mode) : 'Ready when you are'}</p>
           <div className="row">
