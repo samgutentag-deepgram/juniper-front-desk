@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from 'react'
-import { CREDIT_CTA } from '../lib/cta'
+import { signupUrl } from '../lib/cta'
 
 export function KeyEntry({ onKey }: { onKey: (key: string) => void }) {
   const [value, setValue] = useState('')
@@ -21,7 +21,7 @@ export function KeyEntry({ onKey }: { onKey: (key: string) => void }) {
         <button type="submit" className="btn primary" disabled={!value.trim()}>Use this key</button>
       </div>
       <p className="muted small">
-        No key yet? <a href={CREDIT_CTA.url} target="_blank" rel="noreferrer">Sign up and claim the Flux TTS credit</a>.
+        No key yet? <a href={signupUrl('key-entry')} target="_blank" rel="noreferrer">Sign up and claim the Flux TTS credit</a>.
         Use headphones: the agent can hear your speakers.
       </p>
     </form>
