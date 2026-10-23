@@ -109,6 +109,11 @@ a { color: var(--dg-state-live); }
 
 mark.code { background: var(--dg-state-live); color: var(--dg-text-on-accent); padding: 0 4px; border-radius: var(--dg-shape-control); font-weight: 600; letter-spacing: 0.04em; }
 
+/* Mode tabs, with the repo link beside them */
+.masthead-actions { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.repo-link { font-size: 0.88rem; color: var(--dg-text-body); }
+.repo-link:hover { color: var(--dg-state-live); }
+
 /* Mode tabs */
 .tabs { display: inline-flex; gap: 4px; padding: 4px; border: 1px solid var(--dg-border); border-radius: var(--dg-shape-panel); background: var(--dg-bg-well); }
 .tab { background: none; border: 0; color: var(--dg-text-body); font: inherit; padding: 8px 14px; border-radius: var(--dg-shape-control); cursor: pointer; }
@@ -259,6 +264,8 @@ mark.code { background: var(--dg-state-live); color: var(--dg-text-on-accent); p
   .page { padding: 12px 12px 0; gap: 12px; }
   .masthead h1 { font-size: 1.3rem; }
   .masthead .lede { font-size: 0.92rem; }
+  .masthead-actions { width: 100%; flex-direction: column-reverse; align-items: stretch; gap: 8px; }
+  .repo-link { text-align: right; }
   .tabs { width: 100%; }
   .tab { flex: 1; }
 

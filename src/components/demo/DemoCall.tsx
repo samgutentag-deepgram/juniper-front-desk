@@ -11,7 +11,7 @@ export function DemoCall({ demo }: { demo: ReturnType<typeof useDemo> }) {
     <div className="convo">
       <div className="convo-head">
         <p className="mode" aria-live="polite">
-          {demo.callerTalking ? 'You are talking…' : demo.agentTalking ? 'The front desk is talking…' : demo.entries.length ? 'Your turn' : 'Click your first line above'}
+          {demo.callerTalking ? 'You are talking…' : demo.agentTalking ? 'The front desk is talking…' : demo.entries.length ? 'Your turn' : 'Click your first line to start'}
         </p>
         <div className="row">
           {(demo.agentTalking || demo.callerTalking) && <button type="button" className="btn small" onClick={demo.stop}>■ Stop</button>}

@@ -11,6 +11,7 @@ import { CHAPTERS, currentLine, guide, phaseFor, runLabel, START, type GuideEven
 import { VoiceCard } from './components/VoiceCard'
 import { KeyEntry } from './components/KeyEntry'
 import { CreditCta } from './components/CreditCta'
+import { REPO_URL } from './lib/cta'
 import { DemoCall } from './components/demo/DemoCall'
 import { useDemo } from './components/demo/useDemo'
 import { LiveCall } from './components/live/LiveCall'
@@ -109,11 +110,14 @@ export function App() {
             You just adopted a dog and need a vet. Say your lines. Every switch starts off: hear it fail, flip it, say the line again.
           </p>
         </div>
+        <div className="masthead-actions">
+        <a className="repo-link" href={REPO_URL} target="_blank" rel="noreferrer">View the code on GitHub</a>
         <div className="tabs" role="tablist" aria-label="How to call">
           <button type="button" role="tab" aria-selected={mode === 'demo'} className={mode === 'demo' ? 'tab on' : 'tab'}
             onClick={() => switchMode('demo')}>Replay, no key</button>
           <button type="button" role="tab" aria-selected={mode === 'live'} className={mode === 'live' ? 'tab on' : 'tab'}
             onClick={() => switchMode('live')}>Live, your mic</button>
+        </div>
         </div>
       </header>
 

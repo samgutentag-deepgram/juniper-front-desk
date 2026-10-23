@@ -31,3 +31,6 @@ export const CREDIT_CTA = {
 
 /** The talk demo on raw Flux sockets, with the latency and end-of-turn stats this page leaves out. */
 export const HOLD_PLEASE_URL = 'https://github.com/samgutentag-deepgram/hold-please'
+
+/** This demo's source. */
+export const REPO_URL = 'https://github.com/samgutentag-deepgram/juniper-front-desk'
