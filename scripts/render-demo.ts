@@ -102,7 +102,7 @@ for (const step of SCRIPT) {
   if (only && !only.includes(step.id)) continue
   const parts = step.say.split(' | ')
   let pcms: Buffer[] = []
-  let pcm = Buffer.alloc(0)
+  let pcm: Buffer = Buffer.alloc(0)
   let heardOff: string[] = []
   let heardOn: string[] = []
   // TTS takes vary. For the end-of-turn step, keep the first take that shows what the switch does

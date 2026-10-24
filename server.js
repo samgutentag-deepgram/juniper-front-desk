@@ -1,9 +1,9 @@
+// Serves the built page, and that is all. Visitors bring their own Deepgram key and it goes from
+// their browser straight to Deepgram, so this server holds no key and never sees one.
 import express from 'express'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-// Static only. The visitor's key goes from their browser straight to Deepgram and never reaches
-// this server, which holds no key of its own.
 export function createApp() {
   const app = express()
   app.disable('x-powered-by')
@@ -13,8 +13,7 @@ export function createApp() {
   return app
 }
 
-const isMain = process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)
-if (isMain) {
+if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const port = Number(process.env.PORT ?? 8081)
   createApp().listen(port, () => console.log(`juniper-front-desk on http://localhost:${port}`))
 }

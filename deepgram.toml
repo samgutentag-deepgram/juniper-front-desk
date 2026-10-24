@@ -9,25 +9,21 @@ sdk = "@deepgram/react"
 tags = ["voice-agent", "flux", "flux-tts", "react", "typescript"]
 
 [check]
-command = ["make check"]
-message = "Typecheck passed and style pack sealed"
+command = ["pnpm check"]
+message = "Typecheck passed"
 
 [install]
-command = ["make install"]
+command = ["pnpm install"]
 message = "Dependencies installed"
 
-[install.config]
-sample = "sample.env"
-output = ".env"
-
 [start]
-command = ["make start"]
-message = "Running at http://localhost:8081"
+command = ["pnpm dev"]
+message = "Running at http://localhost:8080"
 
 [test]
-command = ["make test"]
+command = ["pnpm test"]
 message = "Tests passed"
 
 [clean]
-command = ["make clean"]
+command = ["rm -rf node_modules dist"]
 message = "Build artifacts cleaned"

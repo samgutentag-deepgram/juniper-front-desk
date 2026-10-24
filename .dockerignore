@@ -1,8 +1,7 @@
 node_modules
 dist
-dist-server
 .git
+.github
 .env
 tests
-.hub
-advocacy
+scripts

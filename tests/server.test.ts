@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import request from 'supertest'
-import { createApp } from '../src/server/index'
+import { createApp } from '../server.js'
 
 describe('server', () => {
   it('has no token or key route: the key never reaches it', async () => {

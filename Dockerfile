@@ -12,6 +12,6 @@ ENV NODE_ENV=production PORT=8080
 RUN corepack enable
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 RUN pnpm install --frozen-lockfile --prod
+COPY server.js ./
 COPY --from=build /app/dist ./dist
-COPY --from=build /app/dist-server ./dist-server
-CMD ["node", "dist-server/index.js"]
+CMD ["node", "server.js"]

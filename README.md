@@ -1,16 +1,17 @@
 # Juniper Front Desk
 
-**Call a vet clinic's front desk from your browser, then break it four ways and watch it hold.**
+**Call a vet clinic's front desk from your browser, break it the ways real callers do, and hear
+each fix.**
 
 You just adopted a dog and need a vet. The front desk at Juniper Veterinary Clinic (fictional)
-answers, listening with Deepgram Flux and speaking with Flux TTS, on the Deepgram Voice Agent API.
-Bring your own Deepgram key; there is nothing else to install and no LLM key.
+answers, listening with Deepgram Flux and speaking with Flux TTS, on the
+[Deepgram Voice Agent API](https://developers.deepgram.com/docs/voice-agent). A guided walkthrough
+takes you through three switches that break voice agents on real callers. Say a line with the
+switch off, flip it, and say the line again.
 
-## What to try
+Try it now, no install: <https://dg-devrel-juniper-front-desk.fly.dev>
 
-A guided walkthrough, one chapter per switch, each an A/B: say the chapter's lines with its switch
-off, the guide asks you to flip it, then say them again with it on. Flip back and forth as often as
-you like; the transcript marks each run "off" or "on".
+## What it shows
 
 | Switch | Off | On |
 |---|---|---|
@@ -18,59 +19,122 @@ you like; the transcript marks each run "off" or "on".
 | Keyterms | "Doctor Gutentag" comes out wrong and the lookup finds nobody | The staff list goes to Flux mid-call and the name lands |
 | Smart end of turn | A one-second pause ends your turn, so it answers half a sentence | Flux hears "and, um" is not finished and waits |
 
-Then book a time and hear Flux TTS read back a booking reference and a phone number in the voice and
-tone you pick.
+Then book a time and hear Flux TTS read back a booking reference and a phone number, in the voice
+and tone you pick.
 
-**No key?** The default tab is a click-through replay. Every line was voiced with Flux TTS and every
-caller line transcribed by Flux, once with each switch off and once on, so the before and after are
-real output. They are also chosen: TTS takes vary, and for the end-of-turn pair the renderer keeps
-the first take where the timer splits the sentence and Flux does not. The first render came out the
-other way round. Try the line live before quoting the replay as typical. `scripts/render-demo.ts`
-regenerates it.
+The page has two tabs:
 
-**Want the numbers?** Latency, end-of-turn confidence and the eager end-of-turn trade live in
-[hold-please](https://github.com/samgutentag-deepgram/hold-please), the raw-socket version of this
-demo from the Vonage Tech Week talk.
+- **Replay, no key.** Recorded Flux TTS audio and real Flux transcripts, made once ahead of time
+  with each switch off and on. Anyone can click through it. (Takes vary, so the replay keeps the
+  clearest one per switch.)
+- **Live, your mic.** The real thing on your own Deepgram key, with your words showing as you
+  speak.
 
-## Run it locally
+## Run it yourself
 
-```bash
-make install
-pnpm dev
-```
+You need [Node 22](https://nodejs.org) or newer. For the Live tab you also need a Deepgram API key;
+[sign up](https://console.deepgram.com/signup) and create one in the console.
 
-Open <http://localhost:8080>, paste a Deepgram API key, and press **Start the call**. Headphones
-help: the agent can hear your speakers.
+1. **Clone the repo.**
+
+   ```bash
+   git clone https://github.com/samgutentag-deepgram/juniper-front-desk.git
+   cd juniper-front-desk
+   ```
+
+2. **Turn on pnpm**, which ships with Node through Corepack.
+
+   ```bash
+   corepack enable
+   ```
+
+3. **Install the dependencies.**
+
+   ```bash
+   pnpm install
+   ```
+
+4. **Start it.**
+
+   ```bash
+   pnpm dev
+   ```
+
+5. **Open <http://localhost:8080>.** The Replay tab works right away. For the Live tab, paste your
+   Deepgram key, press **Start the call**, and allow the microphone. Use headphones, or the agent
+   hears its own voice through your speakers.
+
+There is no `.env` to fill in. Your key goes from your browser straight to Deepgram, and nothing
+stores it.
 
 ## How it works
 
 ```
-browser ══ one websocket, your key, Voice Agent API ══▶ Flux (listen)
-                                                       Claude Haiku, hosted by Deepgram (think)
-                                                       Flux TTS (speak)
+your browser ══ one websocket, your key ══▶ Deepgram Voice Agent API
+                                            ├─ Flux listens
+                                            ├─ Claude Haiku thinks (hosted by Deepgram, no LLM key)
+                                            └─ Flux TTS speaks
 ```
 
-The server only serves the page. It holds no key and never sees yours. Every setting lives in
-[`src/lib/agent-config.ts`](src/lib/agent-config.ts); fork that file to build your own.
+- **The switches change the open call.** Keyterms and end of turn go out as one `UpdateListen`
+  message, and voice as `UpdateSpeak`, so nothing reconnects. Barge-in off mutes your mic while
+  the agent talks.
+- **Live captions are a second stream.** The Voice Agent API reports what you said once your turn
+  ends, so the Live tab also sends your mic to Flux speech-to-text directly and shows its partial
+  transcripts as you speak.
+- **The server only serves the page.** `server.js` is a few lines of Express. It holds no key and
+  never sees yours.
 
-## Deploy
+## Make it yours
 
-Fly.io, one app, `dg-devrel-juniper-front-desk`: `fly deploy`. No secrets to set. Live at
-<https://dg-devrel-juniper-front-desk.fly.dev>.
+Every setting lives in one of these files:
+
+| To change | Edit |
+|---|---|
+| Models, voices, the LLM | [`src/lib/agent-config.ts`](src/lib/agent-config.ts) |
+| The clinic, its prompt, staff and keyterms | [`src/lib/clinic.ts`](src/lib/clinic.ts) |
+| The lines you say and the replies | [`src/lib/script.ts`](src/lib/script.ts) |
+| The walkthrough chapters | [`src/lib/guide.ts`](src/lib/guide.ts) |
+| What each switch does and says | [`src/lib/toggles.ts`](src/lib/toggles.ts) |
+| Colors and fonts | [`src/styles/packs/`](src/styles/packs/) |
+
+Change a line in `script.ts` and the replay is out of date. Rebuild it with your own key (this
+needs [ffmpeg](https://ffmpeg.org) installed):
+
+```bash
+DEEPGRAM_API_KEY=your-key pnpm exec tsx scripts/render-demo.ts
+```
+
+## Check it
+
+```bash
+pnpm check && pnpm test
+```
+
+To run every switch against the live API with a synthesized caller, no mic needed:
+
+```bash
+DEEPGRAM_API_KEY=your-key pnpm exec tsx scripts/smoke.ts
+```
+
+## Deploy your own
+
+It runs as one small app on [Fly.io](https://fly.io), with no secrets to set.
+
+1. **Rename the app** in `fly.toml` (`app = "your-app-name"`).
+2. **Create it and deploy.**
+
+   ```bash
+   fly apps create your-app-name
+   fly deploy --remote-only --ha=false
+   ```
+
+## Want the numbers?
+
+Latency, end-of-turn confidence and the eager end-of-turn trade are in
+[hold-please](https://github.com/samgutentag-deepgram/hold-please), the raw-socket version of this
+demo from the Vonage Tech Week talk.
 
 ## License
 
 MIT
-
-## Regenerate the replay
-
-```bash
-DEEPGRAM_API_KEY=... pnpm exec tsx scripts/render-demo.ts
-```
-
-Needs ffmpeg at render time only. Writes `public/demo/*.mp3` and `src/lib/demo-manifest.json`.
-
-## Smoke test without a microphone
-
-`DEEPGRAM_API_KEY=... pnpm exec tsx scripts/smoke.ts` synthesizes a caller with Flux TTS and runs
-all four beats against the live API.
